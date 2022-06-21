@@ -7,7 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import javax.validation.constraints.NotBlank;
+import java.util.Date;
 import java.util.Set;
 
 @Data
@@ -21,10 +22,17 @@ public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(nullable = false)
+    @NotBlank(message = "{title.mandatory}")
     private String title;
+    @Column(nullable = false)
+    @NotBlank(message = "{body.mandatory}")
     private String body;
-    private Timestamp createdOn;
-    private Timestamp modifiedOn;
+    @Column(insertable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdOn;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date modifiedOn =  new Date(System.currentTimeMillis());;
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
     private Author author;

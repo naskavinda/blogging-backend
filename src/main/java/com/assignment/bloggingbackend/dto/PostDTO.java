@@ -6,7 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
+import java.util.Date;
+
 
 @Data
 @Builder
@@ -19,8 +20,8 @@ public class PostDTO {
     private String body;
     private Integer authorId;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Timestamp createdOn;
+    private Date createdOn;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Timestamp modifiedOn;
+    private Date modifiedOn;
 
 }
