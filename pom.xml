@@ -9,7 +9,7 @@
         <relativePath/>
     </parent>
     <groupId>com.assignment</groupId>
-    <artifactId>prower-plant-system</artifactId>
+    <artifactId>blogging-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>blogging-backend</name>
     <description>blogging-backend</description>
