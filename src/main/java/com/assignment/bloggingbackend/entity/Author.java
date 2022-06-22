@@ -1,10 +1,7 @@
 package com.assignment.bloggingbackend.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -35,6 +32,8 @@ public class Author {
     private String address;
     @JsonIgnore
     @OneToMany(mappedBy = "author")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Set<Post> posts;
 }
 
