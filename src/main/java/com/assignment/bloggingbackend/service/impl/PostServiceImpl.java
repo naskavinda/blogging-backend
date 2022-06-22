@@ -1,26 +1,32 @@
 package com.assignment.bloggingbackend.service.impl;
 
+import com.assignment.bloggingbackend.dto.AuthorDTO;
 import com.assignment.bloggingbackend.dto.CommentDTO;
 import com.assignment.bloggingbackend.dto.PostDTO;
 import com.assignment.bloggingbackend.entity.Post;
 import com.assignment.bloggingbackend.exception.BloggingException;
 import com.assignment.bloggingbackend.repository.PostRepository;
+import com.assignment.bloggingbackend.service.AuthorService;
 import com.assignment.bloggingbackend.service.PostService;
 import com.assignment.bloggingbackend.service.impl.helper.MappingUtil;
+import com.assignment.bloggingbackend.util.Response;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 import static com.assignment.bloggingbackend.util.ResponseDetails.E1003;
+import static com.assignment.bloggingbackend.util.ResponseDetails.S1001;
 
 @Service
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
+    private final AuthorService authorService;
 
-    public PostServiceImpl(PostRepository postRepository) {
+    public PostServiceImpl(PostRepository postRepository, AuthorService authorService) {
         this.postRepository = postRepository;
+        this.authorService = authorService;
     }
 
     @Override
@@ -48,5 +54,14 @@ public class PostServiceImpl implements PostService {
         } else {
             throw new BloggingException(E1003.getCode(), E1003.getDescription());
         }
+    }
+
+    @Override
+    public Response<PostDTO> savePost(PostDTO postDTO) {
+        AuthorDTO authorDTO = authorService.findAuthorById(postDTO.getAuthorId());
+        Post post = MappingUtil.mapPostDTOToPost(postDTO, MappingUtil.mapAuthorDTOToAuthor(authorDTO));
+        Post savedPost = postRepository.save(post);
+        PostDTO responsePostDTO = MappingUtil.mapPostToPostDTO(savedPost);
+        return new Response<>(S1001.getCode(), S1001.getDescription(), responsePostDTO);
     }
 }

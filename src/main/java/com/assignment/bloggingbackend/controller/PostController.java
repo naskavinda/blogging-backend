@@ -3,12 +3,11 @@ package com.assignment.bloggingbackend.controller;
 import com.assignment.bloggingbackend.dto.CommentDTO;
 import com.assignment.bloggingbackend.dto.PostDTO;
 import com.assignment.bloggingbackend.service.PostService;
+import com.assignment.bloggingbackend.util.Response;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -38,5 +37,11 @@ public class PostController {
     public ResponseEntity<List<CommentDTO>> findPostsByAuthorId(@PathVariable Integer id) {
         List<CommentDTO> authorDTOs = postService.findCommentsByPostId(id);
         return ResponseEntity.ok(authorDTOs);
+    }
+
+    @PostMapping()
+    public ResponseEntity<Response<PostDTO>> saveAuthor(@Valid @RequestBody PostDTO postDTO) {
+        Response<PostDTO> authorResponse = postService.savePost(postDTO);
+        return ResponseEntity.ok(authorResponse);
     }
 }
