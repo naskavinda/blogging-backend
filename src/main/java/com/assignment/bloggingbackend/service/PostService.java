@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface PostService {
     List<PostDTO> findAllPosts();
+
+    PostDTO findPostById(Integer id);
 }
