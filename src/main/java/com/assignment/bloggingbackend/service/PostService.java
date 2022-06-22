@@ -16,4 +16,6 @@ public interface PostService {
     Response<PostDTO> savePost(PostDTO postDTO);
 
     Response<PostDTO> updatePost(PostDTO postDTO);
+
+    Response<Boolean> deletePost(Integer id);
 }

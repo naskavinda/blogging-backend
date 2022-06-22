@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.assignment.bloggingbackend.util.ResponseDetails.*;
-import static com.assignment.bloggingbackend.util.ResponseDetails.S1003;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -74,6 +73,18 @@ public class PostServiceImpl implements PostService {
             Post savedPost = postRepository.save(post);
             PostDTO responsePostDTO = MappingUtil.mapPostToPostDTO(savedPost);
             return new Response<>(S1003.getCode(), S1003.getDescription(), responsePostDTO);
+        } else {
+            throw new BloggingException(E1003.getCode(), E1003.getDescription());
+        }
+    }
+
+    // TODO: 6/22/2022 add comment deletion
+    @Override
+    public Response<Boolean> deletePost(Integer id) {
+        Optional<Post> post = postRepository.findById(id);
+        if (post.isPresent()) {
+            postRepository.delete(post.get());
+            return new Response<>(S1002.getCode(), S1002.getDescription(), true);
         } else {
             throw new BloggingException(E1003.getCode(), E1003.getDescription());
         }
