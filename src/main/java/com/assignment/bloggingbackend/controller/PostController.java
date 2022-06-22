@@ -1,5 +1,6 @@
 package com.assignment.bloggingbackend.controller;
 
+import com.assignment.bloggingbackend.dto.CommentDTO;
 import com.assignment.bloggingbackend.dto.PostDTO;
 import com.assignment.bloggingbackend.service.PostService;
 import org.springframework.http.ResponseEntity;
@@ -31,5 +32,11 @@ public class PostController {
     public ResponseEntity<PostDTO> findPostById(@PathVariable Integer id) {
         PostDTO postDTOs = postService.findPostById(id);
         return ResponseEntity.ok(postDTOs);
+    }
+
+    @GetMapping("/{id}/comments")
+    public ResponseEntity<List<CommentDTO>> findPostsByAuthorId(@PathVariable Integer id) {
+        List<CommentDTO> authorDTOs = postService.findCommentsByPostId(id);
+        return ResponseEntity.ok(authorDTOs);
     }
 }
