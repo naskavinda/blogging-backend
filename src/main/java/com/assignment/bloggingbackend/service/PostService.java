@@ -14,4 +14,6 @@ public interface PostService {
     List<CommentDTO> findCommentsByPostId(Integer id);
 
     Response<PostDTO> savePost(PostDTO postDTO);
+
+    Response<PostDTO> updatePost(PostDTO postDTO);
 }

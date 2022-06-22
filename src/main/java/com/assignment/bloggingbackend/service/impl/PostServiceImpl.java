@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-import static com.assignment.bloggingbackend.util.ResponseDetails.E1003;
-import static com.assignment.bloggingbackend.util.ResponseDetails.S1001;
+import static com.assignment.bloggingbackend.util.ResponseDetails.*;
+import static com.assignment.bloggingbackend.util.ResponseDetails.S1003;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -63,5 +63,19 @@ public class PostServiceImpl implements PostService {
         Post savedPost = postRepository.save(post);
         PostDTO responsePostDTO = MappingUtil.mapPostToPostDTO(savedPost);
         return new Response<>(S1001.getCode(), S1001.getDescription(), responsePostDTO);
+    }
+
+    @Override
+    public Response<PostDTO> updatePost(PostDTO postDTO) {
+        Optional<Post> postOptional = postRepository.findById(postDTO.getId());
+        if (postOptional.isPresent()) {
+            AuthorDTO authorDTO = authorService.findAuthorById(postDTO.getAuthorId());
+            Post post = MappingUtil.mapPostDTOToPost(postDTO, MappingUtil.mapAuthorDTOToAuthor(authorDTO));
+            Post savedPost = postRepository.save(post);
+            PostDTO responsePostDTO = MappingUtil.mapPostToPostDTO(savedPost);
+            return new Response<>(S1003.getCode(), S1003.getDescription(), responsePostDTO);
+        } else {
+            throw new BloggingException(E1003.getCode(), E1003.getDescription());
+        }
     }
 }

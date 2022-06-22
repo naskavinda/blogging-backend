@@ -44,4 +44,11 @@ public class PostController {
         Response<PostDTO> authorResponse = postService.savePost(postDTO);
         return ResponseEntity.ok(authorResponse);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Response<PostDTO>> updateAuthor(@Valid @RequestBody PostDTO postDTO, @PathVariable Integer id) {
+        postDTO.setId(id);
+        Response<PostDTO> response = postService.updatePost(postDTO);
+        return ResponseEntity.ok(response);
+    }
 }
