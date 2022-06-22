@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -16,6 +19,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Entity
 @Table
+@EntityListeners(AuditingEntityListener.class)
 public class Comment {
 
     @Id
@@ -33,9 +37,11 @@ public class Comment {
     private String body;
     @Column(insertable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
+    @CreatedDate
     private Date createdOn;
     @Temporal(TemporalType.TIMESTAMP)
-    private Date modifiedOn =  new Date(System.currentTimeMillis());
+    @LastModifiedDate
+    private Date modifiedOn;
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;

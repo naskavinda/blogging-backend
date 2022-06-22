@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -17,6 +20,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table
+@EntityListeners(AuditingEntityListener.class)
 public class Post {
 
     @Id
@@ -28,11 +32,13 @@ public class Post {
     @Column(nullable = false)
     @NotBlank(message = "{body.mandatory}")
     private String body;
-    @Column(insertable = false, updatable = false)
+    @Column(updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
+    @CreatedDate
     private Date createdOn;
     @Temporal(TemporalType.TIMESTAMP)
-    private Date modifiedOn =  new Date(System.currentTimeMillis());;
+    @LastModifiedDate
+    private Date modifiedOn;
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
     private Author author;
