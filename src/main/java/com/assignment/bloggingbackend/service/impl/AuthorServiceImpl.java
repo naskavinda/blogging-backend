@@ -42,9 +42,15 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public AuthorDTO findAuthorById(Integer id) {
+    public AuthorDTO findAuthorDTOById(Integer id) {
         return authorRepository.findById(id)
                 .map(MappingUtil::mapAuthorToAuthorDTO)
+                .orElseThrow(() -> new BloggingException(E1003.getCode(), E1003.getDescription()));
+    }
+
+    @Override
+    public Author findAuthorById(Integer id) {
+        return authorRepository.findById(id)
                 .orElseThrow(() -> new BloggingException(E1003.getCode(), E1003.getDescription()));
     }
 

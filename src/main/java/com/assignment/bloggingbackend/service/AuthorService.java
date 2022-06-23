@@ -2,6 +2,7 @@ package com.assignment.bloggingbackend.service;
 
 import com.assignment.bloggingbackend.dto.AuthorDTO;
 import com.assignment.bloggingbackend.dto.PostDTO;
+import com.assignment.bloggingbackend.entity.Author;
 import com.assignment.bloggingbackend.util.Response;
 
 import java.util.List;
@@ -11,7 +12,9 @@ public interface AuthorService {
 
     List<AuthorDTO> findAllAuthors();
 
-    AuthorDTO findAuthorById(Integer id);
+    AuthorDTO findAuthorDTOById(Integer id);
+
+    Author findAuthorById(Integer id);
 
     List<PostDTO> findPostsByAuthorId(Integer id);
 

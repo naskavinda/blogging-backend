@@ -1,6 +1,5 @@
 package com.assignment.bloggingbackend.service.impl;
 
-import com.assignment.bloggingbackend.dto.AuthorDTO;
 import com.assignment.bloggingbackend.dto.CommentDTO;
 import com.assignment.bloggingbackend.dto.PostDTO;
 import com.assignment.bloggingbackend.entity.Post;
@@ -37,10 +36,15 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDTO findPostById(Integer id) {
+    public PostDTO findPostDTOById(Integer id) {
         return postRepository.findById(id)
                 .map(MappingUtil::mapPostToPostDTO)
                 .orElseThrow(() -> new BloggingException(E1003.getCode(), E1003.getDescription()));
+    }
+
+    @Override
+    public Post findPostById(Integer id) {
+        return postRepository.findById(id).orElseThrow(() -> new BloggingException(E1003.getCode(), E1003.getDescription()));
     }
 
     @Override
@@ -57,8 +61,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Response<PostDTO> savePost(PostDTO postDTO) {
-        AuthorDTO authorDTO = authorService.findAuthorById(postDTO.getAuthorId());
-        Post post = MappingUtil.mapPostDTOToPost(postDTO, MappingUtil.mapAuthorDTOToAuthor(authorDTO));
+        Post post = MappingUtil.mapPostDTOToPost(postDTO, authorService::findAuthorById);
         Post savedPost = postRepository.save(post);
         PostDTO responsePostDTO = MappingUtil.mapPostToPostDTO(savedPost);
         return new Response<>(S1001.getCode(), S1001.getDescription(), responsePostDTO);
@@ -68,8 +71,7 @@ public class PostServiceImpl implements PostService {
     public Response<PostDTO> updatePost(PostDTO postDTO) {
         Optional<Post> postOptional = postRepository.findById(postDTO.getId());
         if (postOptional.isPresent()) {
-            AuthorDTO authorDTO = authorService.findAuthorById(postDTO.getAuthorId());
-            Post post = MappingUtil.mapPostDTOToPost(postDTO, MappingUtil.mapAuthorDTOToAuthor(authorDTO));
+            Post post = MappingUtil.mapPostDTOToPost(postDTO, authorService::findAuthorById);
             Post savedPost = postRepository.save(post);
             PostDTO responsePostDTO = MappingUtil.mapPostToPostDTO(savedPost);
             return new Response<>(S1003.getCode(), S1003.getDescription(), responsePostDTO);
@@ -89,4 +91,6 @@ public class PostServiceImpl implements PostService {
             throw new BloggingException(E1003.getCode(), E1003.getDescription());
         }
     }
+
+
 }

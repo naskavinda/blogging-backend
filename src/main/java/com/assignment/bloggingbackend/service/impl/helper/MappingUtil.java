@@ -9,6 +9,8 @@ import com.assignment.bloggingbackend.entity.Post;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.function.IntFunction;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MappingUtil {
 
@@ -43,11 +45,11 @@ public final class MappingUtil {
                 .build();
     }
 
-    public static Post mapPostDTOToPost(PostDTO postDTO, Author author) {
+    public static Post mapPostDTOToPost(PostDTO postDTO, IntFunction<Author> function) {
         return Post.builder()
                 .id(postDTO.getId())
                 .title(postDTO.getTitle())
-                .author(author)
+                .author(function.apply(postDTO.getAuthorId()))
                 .body(postDTO.getBody())
                 .createdOn(postDTO.getCreatedOn())
                 .modifiedOn(postDTO.getModifiedOn())
@@ -66,9 +68,9 @@ public final class MappingUtil {
                 .build();
     }
 
-    public static Comment mapCommentDTOToComment(CommentDTO commentDTO, Post post) {
+    public static Comment mapCommentDTOToComment(CommentDTO commentDTO, IntFunction<Post> function) {
         return Comment.builder()
-                .post(post)
+                .post(function.apply(commentDTO.getPostId()))
                 .id(commentDTO.getId())
                 .name(commentDTO.getName())
                 .email(commentDTO.getEmail())
