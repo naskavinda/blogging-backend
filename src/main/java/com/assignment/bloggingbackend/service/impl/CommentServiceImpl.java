@@ -4,7 +4,6 @@ import com.assignment.bloggingbackend.dto.CommentDTO;
 import com.assignment.bloggingbackend.entity.Comment;
 import com.assignment.bloggingbackend.exception.BloggingException;
 import com.assignment.bloggingbackend.repository.CommentRepository;
-import com.assignment.bloggingbackend.service.AuthorService;
 import com.assignment.bloggingbackend.service.CommentService;
 import com.assignment.bloggingbackend.service.PostService;
 import com.assignment.bloggingbackend.service.impl.helper.MappingHelper;
@@ -21,12 +20,10 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
     private final PostService postService;
-    private final AuthorService authorService;
 
-    public CommentServiceImpl(CommentRepository commentRepository, PostService postService, AuthorService authorService) {
+    public CommentServiceImpl(CommentRepository commentRepository, PostService postService) {
         this.commentRepository = commentRepository;
         this.postService = postService;
-        this.authorService = authorService;
     }
 
     @Override
