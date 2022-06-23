@@ -4,8 +4,8 @@ import com.assignment.bloggingbackend.dto.CommentDTO;
 import com.assignment.bloggingbackend.entity.Comment;
 import com.assignment.bloggingbackend.exception.BloggingException;
 import com.assignment.bloggingbackend.repository.CommentRepository;
+import com.assignment.bloggingbackend.repository.PostRepository;
 import com.assignment.bloggingbackend.service.CommentService;
-import com.assignment.bloggingbackend.service.PostService;
 import com.assignment.bloggingbackend.service.impl.helper.MappingHelper;
 import com.assignment.bloggingbackend.util.Response;
 import org.springframework.stereotype.Service;
@@ -19,11 +19,11 @@ import static com.assignment.bloggingbackend.util.ResponseDetails.*;
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
-    private final PostService postService;
+    private final PostRepository postRepository;
 
-    public CommentServiceImpl(CommentRepository commentRepository, PostService postService) {
+    public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository) {
         this.commentRepository = commentRepository;
-        this.postService = postService;
+        this.postRepository = postRepository;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Response<CommentDTO> saveComment(CommentDTO commentDTO) {
-        Comment comment = MappingHelper.mapCommentDTOToComment(commentDTO, postService::findPostById);
+        Comment comment = MappingHelper.mapCommentDTOToComment(commentDTO, postRepository::findById);
         Comment savedComment = commentRepository.save(comment);
         CommentDTO responseCommentDTO = MappingHelper.mapCommentToCommentDTO(savedComment);
         return new Response<>(S1001.getCode(), S1001.getDescription(), responseCommentDTO);
@@ -53,7 +53,7 @@ public class CommentServiceImpl implements CommentService {
     public Response<CommentDTO> updateComment(CommentDTO commentDTO) {
         Optional<Comment> commentOptional = commentRepository.findById(commentDTO.getId());
         if (commentOptional.isPresent()) {
-            Comment comment = MappingHelper.mapCommentDTOToComment(commentDTO, postService::findPostById);
+            Comment comment = MappingHelper.mapCommentDTOToComment(commentDTO, postRepository::findById);
             Comment savedComment = commentRepository.save(comment);
             CommentDTO responseCommentDTO = MappingHelper.mapCommentToCommentDTO(savedComment);
             return new Response<>(S1003.getCode(), S1003.getDescription(), responseCommentDTO);

@@ -28,7 +28,7 @@ public class AuthorController {
 
     @GetMapping("/{id}")
     public ResponseEntity<AuthorDTO> findAuthorById(@PathVariable Integer id) {
-        AuthorDTO authorDTOs = authorService.findAuthorDTOById(id);
+        AuthorDTO authorDTOs = authorService.findAuthorById(id);
         return ResponseEntity.ok(authorDTOs);
     }
 

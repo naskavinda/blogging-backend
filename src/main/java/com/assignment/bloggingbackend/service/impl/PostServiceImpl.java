@@ -4,8 +4,9 @@ import com.assignment.bloggingbackend.dto.CommentDTO;
 import com.assignment.bloggingbackend.dto.PostDTO;
 import com.assignment.bloggingbackend.entity.Post;
 import com.assignment.bloggingbackend.exception.BloggingException;
+import com.assignment.bloggingbackend.repository.AuthorRepository;
+import com.assignment.bloggingbackend.repository.CommentRepository;
 import com.assignment.bloggingbackend.repository.PostRepository;
-import com.assignment.bloggingbackend.service.AuthorService;
 import com.assignment.bloggingbackend.service.PostService;
 import com.assignment.bloggingbackend.service.impl.helper.MappingHelper;
 import com.assignment.bloggingbackend.util.Response;
@@ -20,11 +21,15 @@ import static com.assignment.bloggingbackend.util.ResponseDetails.*;
 public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
-    private final AuthorService authorService;
+    private final AuthorRepository authorRepository;
+    private final CommentRepository commentRepository;
 
-    public PostServiceImpl(PostRepository postRepository, AuthorService authorService) {
+    public PostServiceImpl(PostRepository postRepository,
+                           AuthorRepository authorRepository,
+                           CommentRepository commentRepository) {
         this.postRepository = postRepository;
-        this.authorService = authorService;
+        this.authorRepository = authorRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Override
@@ -36,15 +41,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDTO findPostDTOById(Integer id) {
+    public PostDTO findPostById(Integer id) {
         return postRepository.findById(id)
                 .map(MappingHelper::mapPostToPostDTO)
                 .orElseThrow(() -> new BloggingException(E1003.getCode(), E1003.getDescription()));
-    }
-
-    @Override
-    public Post findPostById(Integer id) {
-        return postRepository.findById(id).orElseThrow(() -> new BloggingException(E1003.getCode(), E1003.getDescription()));
     }
 
     @Override
@@ -61,7 +61,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Response<PostDTO> savePost(PostDTO postDTO) {
-        Post post = MappingHelper.mapPostDTOToPost(postDTO, authorService::findAuthorById);
+        Post post = MappingHelper.mapPostDTOToPost(postDTO, authorRepository::findById);
         Post savedPost = postRepository.save(post);
         PostDTO responsePostDTO = MappingHelper.mapPostToPostDTO(savedPost);
         return new Response<>(S1001.getCode(), S1001.getDescription(), responsePostDTO);
@@ -71,7 +71,7 @@ public class PostServiceImpl implements PostService {
     public Response<PostDTO> updatePost(PostDTO postDTO) {
         Optional<Post> postOptional = postRepository.findById(postDTO.getId());
         if (postOptional.isPresent()) {
-            Post post = MappingHelper.mapPostDTOToPost(postDTO, authorService::findAuthorById);
+            Post post = MappingHelper.mapPostDTOToPost(postDTO, authorRepository::findById);
             Post savedPost = postRepository.save(post);
             PostDTO responsePostDTO = MappingHelper.mapPostToPostDTO(savedPost);
             return new Response<>(S1003.getCode(), S1003.getDescription(), responsePostDTO);
@@ -80,11 +80,11 @@ public class PostServiceImpl implements PostService {
         }
     }
 
-    // TODO: 6/22/2022 add comment deletion
     @Override
     public Response<Boolean> deletePost(Integer id) {
         Optional<Post> post = postRepository.findById(id);
         if (post.isPresent()) {
+            commentRepository.deleteAll(post.get().getComments());
             postRepository.delete(post.get());
             return new Response<>(S1002.getCode(), S1002.getDescription(), true);
         } else {

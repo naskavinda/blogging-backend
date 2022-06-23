@@ -6,10 +6,14 @@ import com.assignment.bloggingbackend.dto.PostDTO;
 import com.assignment.bloggingbackend.entity.Author;
 import com.assignment.bloggingbackend.entity.Comment;
 import com.assignment.bloggingbackend.entity.Post;
+import com.assignment.bloggingbackend.exception.BloggingException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.Optional;
 import java.util.function.IntFunction;
+
+import static com.assignment.bloggingbackend.util.ResponseDetails.E1003;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MappingHelper {
@@ -45,11 +49,11 @@ public final class MappingHelper {
                 .build();
     }
 
-    public static Post mapPostDTOToPost(PostDTO postDTO, IntFunction<Author> function) {
+    public static Post mapPostDTOToPost(PostDTO postDTO, IntFunction<Optional<Author>> function) {
         return Post.builder()
                 .id(postDTO.getId())
                 .title(postDTO.getTitle())
-                .author(function.apply(postDTO.getAuthorId()))
+                .author(getResult(function, postDTO.getAuthorId()))
                 .body(postDTO.getBody())
                 .createdOn(postDTO.getCreatedOn())
                 .modifiedOn(postDTO.getModifiedOn())
@@ -68,9 +72,9 @@ public final class MappingHelper {
                 .build();
     }
 
-    public static Comment mapCommentDTOToComment(CommentDTO commentDTO, IntFunction<Post> function) {
+    public static Comment mapCommentDTOToComment(CommentDTO commentDTO, IntFunction<Optional<Post>> function) {
         return Comment.builder()
-                .post(function.apply(commentDTO.getPostId()))
+                .post(getResult(function, commentDTO.getPostId()))
                 .id(commentDTO.getId())
                 .name(commentDTO.getName())
                 .email(commentDTO.getEmail())
@@ -78,6 +82,10 @@ public final class MappingHelper {
                 .createdOn(commentDTO.getCreatedOn())
                 .modifiedOn(commentDTO.getCreatedOn())
                 .build();
+    }
+
+    private static <T> T getResult(IntFunction<Optional<T>> function, Integer id) {
+        return function.apply(id).orElseThrow(() -> new BloggingException(E1003.getCode(), E1003.getDescription()));
     }
 
 }

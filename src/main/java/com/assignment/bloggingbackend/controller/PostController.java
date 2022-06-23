@@ -29,7 +29,7 @@ public class PostController {
 
     @GetMapping("/{id}")
     public ResponseEntity<PostDTO> findPostById(@PathVariable Integer id) {
-        PostDTO postDTOs = postService.findPostDTOById(id);
+        PostDTO postDTOs = postService.findPostById(id);
         return ResponseEntity.ok(postDTOs);
     }
 
