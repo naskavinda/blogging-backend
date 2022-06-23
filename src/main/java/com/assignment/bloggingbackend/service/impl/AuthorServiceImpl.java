@@ -6,7 +6,7 @@ import com.assignment.bloggingbackend.entity.Author;
 import com.assignment.bloggingbackend.exception.BloggingException;
 import com.assignment.bloggingbackend.repository.AuthorRepository;
 import com.assignment.bloggingbackend.service.AuthorService;
-import com.assignment.bloggingbackend.service.impl.helper.MappingUtil;
+import com.assignment.bloggingbackend.service.impl.helper.MappingHelper;
 import com.assignment.bloggingbackend.util.Response;
 import org.springframework.stereotype.Service;
 
@@ -26,10 +26,10 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Response<AuthorDTO> saveAuthor(AuthorDTO authorDTO) {
-        Author author = MappingUtil.mapAuthorDTOToAuthor(authorDTO);
+        Author author = MappingHelper.mapAuthorDTOToAuthor(authorDTO);
         author.setId(0);
         Author savedAuthor = authorRepository.save(author);
-        AuthorDTO responseAuthorDTO = MappingUtil.mapAuthorToAuthorDTO(savedAuthor);
+        AuthorDTO responseAuthorDTO = MappingHelper.mapAuthorToAuthorDTO(savedAuthor);
         return new Response<>(S1001.getCode(), S1001.getDescription(), responseAuthorDTO);
     }
 
@@ -37,14 +37,14 @@ public class AuthorServiceImpl implements AuthorService {
     public List<AuthorDTO> findAllAuthors() {
         return authorRepository.findAll()
                 .stream()
-                .map(MappingUtil::mapAuthorToAuthorDTO)
+                .map(MappingHelper::mapAuthorToAuthorDTO)
                 .toList();
     }
 
     @Override
     public AuthorDTO findAuthorDTOById(Integer id) {
         return authorRepository.findById(id)
-                .map(MappingUtil::mapAuthorToAuthorDTO)
+                .map(MappingHelper::mapAuthorToAuthorDTO)
                 .orElseThrow(() -> new BloggingException(E1003.getCode(), E1003.getDescription()));
     }
 
@@ -59,7 +59,7 @@ public class AuthorServiceImpl implements AuthorService {
         Optional<Author> author = authorRepository.findById(id);
         if (author.isPresent()) {
             return author.get().getPosts().stream()
-                    .map(MappingUtil::mapPostToPostDTO)
+                    .map(MappingHelper::mapPostToPostDTO)
                     .toList();
         } else {
             throw new BloggingException(E1003.getCode(), E1003.getDescription());
@@ -81,10 +81,10 @@ public class AuthorServiceImpl implements AuthorService {
     public Response<AuthorDTO> updateAuthor(AuthorDTO authorDTO, Integer id) {
         Optional<Author> authorOptional = authorRepository.findById(id);
         if (authorOptional.isPresent()) {
-            Author author = MappingUtil.mapAuthorDTOToAuthor(authorDTO);
+            Author author = MappingHelper.mapAuthorDTOToAuthor(authorDTO);
             author.setId(id);
             Author savedAuthor = authorRepository.save(author);
-            AuthorDTO responseAuthorDTO = MappingUtil.mapAuthorToAuthorDTO(savedAuthor);
+            AuthorDTO responseAuthorDTO = MappingHelper.mapAuthorToAuthorDTO(savedAuthor);
             return new Response<>(S1003.getCode(), S1003.getDescription(), responseAuthorDTO);
         } else {
             throw new BloggingException(E1003.getCode(), E1003.getDescription());

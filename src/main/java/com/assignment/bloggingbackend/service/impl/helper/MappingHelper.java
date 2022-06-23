@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import java.util.function.IntFunction;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class MappingUtil {
+public final class MappingHelper {
 
     public static Author mapAuthorDTOToAuthor(AuthorDTO authorDTO) {
         return Author.builder()
